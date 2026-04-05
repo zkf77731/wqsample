@@ -9,7 +9,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 # ==========================================
-# 1. 网页基本设置
+# 1. 网页
 # ==========================================
 st.set_page_config(page_title="水文气象数据看板", layout="wide", initial_sidebar_state="expanded")
 
@@ -25,10 +25,8 @@ st.title("水质监测断面流量与气象")
 # ==========================================
 # 2. 连接 Google Sheets 并读取数据
 # ==========================================
-# 这里不再读取本地的 google_key.json，而是读取 Streamlit 云端配置好的机密(Secrets)
 @st.cache_resource
 def init_connection():
-    # 解析 Streamlit 云端配置的 JSON 字符串
     key_dict = json.loads(st.secrets["google_json_key"])
     scopes = [
         'https://www.googleapis.com/auth/spreadsheets',
@@ -43,7 +41,7 @@ gc = init_connection()
 
 SHEET_NAME = 'streamlit_wqsample'
 
-@st.cache_data(ttl=600)  # 缓存 10 分钟，避免频繁请求 API
+@st.cache_data(ttl=600)
 def load_cloud_data():
     sh = gc.open(SHEET_NAME)
 
@@ -57,9 +55,9 @@ def load_cloud_data():
 
     # 转换时间格式并指定时区为 UTC（因为之前你抓取下来存进云端的是 UTC）
     if not df_p.empty:
-        df_p['time'] = pd.to_datetime(df_p['time']).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+        df_p['time'] = pd.to_datetime(df_p['time'], utc=True).dt.tz_convert('Asia/Shanghai')
     if not df_s.empty:
-        df_s['time'] = pd.to_datetime(df_s['time']).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+        df_s['time'] = pd.to_datetime(df_s['time'], utc=True).dt.tz_convert('Asia/Shanghai')
 
     return df_p, df_s
 
