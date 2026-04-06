@@ -192,7 +192,7 @@ with col2:
         
         # 增加数据表折叠面板方便调试查阅
         with st.expander("底层数据表"):
-            st.dataframe(df_merged.style.highlight_max(subset=['streamflow_m3s', 'precip_mm', 'temp_C'], axis=0, color='#FFF2CC'))
+            st.dataframe(df_merged)
             
     else:
         st.warning(f"云端数据库中暂无 {selected_station} 的数据。")
