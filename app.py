@@ -152,7 +152,7 @@ with col2:
             rows=3, cols=1,
             shared_xaxes=True,
             vertical_spacing=0.08,
-            subplot_titles=("径流量预测与采样点 (m³/s)", "降雨量预测 (mm)", "气温预测 (℃)"),
+            subplot_titles=("预报径流量与采样点 (m³/s)", "预报降雨量 (mm)", "预报气温 (℃)"),
             row_heights=[0.4, 0.3, 0.3]
         )
 
@@ -191,8 +191,8 @@ with col2:
         st.plotly_chart(fig, use_container_width=True)
         
         # 增加数据表折叠面板方便调试查阅
-        with st.expander("查看合并后的底层数据表 (已转为北京时间)"):
-            st.dataframe(df_merged.style.highlight_max(axis=0, color='#FFF2CC'))
+        with st.expander("底层数据表"):
+            st.dataframe(df_merged.style.highlight_max(subset=['streamflow_m3s', 'precip_mm', 'temp_C'], axis=0, color='#FFF2CC'))
             
     else:
         st.warning(f"云端数据库中暂无 {selected_station} 的数据。")
